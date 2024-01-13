@@ -1,0 +1,7 @@
+pytube
+Pillow
+pytesseract
+opencv-python
+google-api-python-client
+requests
+bs4

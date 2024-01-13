@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-def get_puzzle_solutions(puzzle_id):
+def get_puzzle_clues(puzzle_id):
     # Construct the URL for the given puzzle ID
     url = f"https://timesforthetimes.co.uk/times-{puzzle_id}"
 
@@ -17,35 +17,46 @@ def get_puzzle_solutions(puzzle_id):
         tables = soup.find_all('table')
 
         if tables:
-            solutions = [extract_solutions_from_table(table) for table in tables]
+            clues = [extract_clues_from_table(table) for table in tables]
 
-            return solutions
+            return clues
         else:
             return "Tables not found on page"
 
     else:
         return f"failed to fetch page. Status code {response.status_code}"
 
-def extract_solutions_from_table(table):
-    solutions = {}
+def extract_clues_from_table(table):
+    clues = {}
     rows = table.find_all('tr')[1:] # skip header for now
     for row in rows:
         cells = row.find_all('td')
         number = cells[0].text.strip()
         clue = cells[1].text.strip()
         if number:
-            solutions[number] = clue
-    return solutions
+            clues[number] = clue
+    return clues
 
-# Example usage
-puzzle_id = 28779 # replace with desired ID
-solutions = get_puzzle_solutions(puzzle_id)
+def save_clues_to_file(puzzle_id, clues, path, link, date):
+    output_file_path = path
 
-if isinstance(solutions, list):
-    for idx, solution_set in enumerate(solutions, start=1):
-        print(f"soulutions for puzzle {puzzle_id}, Table {idx}:")
-        for number, clue in solution_set.items():
-            print(f"{number}. {clue}")
-        print("\n")
-else:
-    print(solutions)
+    if isinstance(clues, list):
+        with open(output_file_path, 'w', encoding="utf-8") as file:
+            file.write(f"Dweebovision Cryptic puzzle {puzzle_id} from {date}\n{link}\n")
+            for idx, clue_set in enumerate(clues, start=1):
+                file.write(f"Clues for Table {idx}:\n")
+                for number, clue in clue_set.items():
+                    file.write(f"{number}. {clue}\n")
+                file.write("\n")
+        print(f"Clues saved to {output_file_path}")
+    else:
+        print(clues)
+
+
+# Main script
+if __name__ == "__main__":
+    # Example usage
+    puzzle_id = 28513 # replace with desired ID
+    clues = get_puzzle_clues(puzzle_id)
+
+    save_clues_to_file(puzzle_id, clues)
