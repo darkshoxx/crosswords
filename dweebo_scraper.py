@@ -9,6 +9,7 @@ from secrety_secrets import API_KEY, CHANNEL_ID
 api_key = API_KEY
 youtube = build('youtube', 'v3', developerKey=api_key)
 
+
 # Step 1: Get a list of all videos on the channel
 def get_channel_videos(channel_id):
     videos = []
@@ -23,7 +24,9 @@ def get_channel_videos(channel_id):
         )
         response = request.execute()
 
-        playlist_id = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+        response_details = response['items'][0]['contentDetails']
+        playlist_id = response_details['relatedPlaylists']['uploads']
+
         playlist_request = youtube.playlistItems().list(
             part='snippet',
             playlistId=playlist_id,
@@ -51,13 +54,16 @@ def filter_videos(videos):
 
         if 'cryptic' in title.lower() and 'mephisto' not in title.lower():
             # Extract the date from the publishedAt string
-            published_date = datetime.strptime(published_at_str, "%Y-%m-%dT%H:%M:%S%z").date().strftime('%Y-%m-%d')
+            published_date = datetime.strptime(
+                published_at_str, "%Y-%m-%dT%H:%M:%S%z"
+            ).date().strftime('%Y-%m-%d')
 
             # Use the date as the key for the dictionary
-            filtered_videos[published_date] = f'https://www.youtube.com/watch?v={video_id}'
+            filtered_videos[published_date] = (
+                f'https://www.youtube.com/watch?v={video_id}'
+            )
 
     return filtered_videos
-
 
 
 # Main script
@@ -70,4 +76,3 @@ if __name__ == "__main__":
     json_filename = 'puzzle_videos_dict.json'
     with open(json_filename, 'w') as json_file:
         json.dump(filtered_videos, json_file, indent=2)
-

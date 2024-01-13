@@ -1,9 +1,13 @@
 from dweebo_scraper import get_channel_videos, CHANNEL_ID, filter_videos
-from puzzle_getter import download_video, process_video, VIDEO_FILE, PUZZLES_DIR
+from puzzle_getter import (
+    download_video, process_video, VIDEO_FILE, PUZZLES_DIR
+)
 from cwparse import get_puzzle_clues, save_clues_to_file
 
-import os, json
-### Get Videos from Channel and store them in file:
+import os
+import json
+
+# Get Videos from Channel and store them in file:
 channel_id = CHANNEL_ID  # Replace with the actual channel ID
 videos = get_channel_videos(channel_id)
 filtered_videos = filter_videos(videos)
@@ -13,8 +17,8 @@ json_filename = 'puzzle_videos_dict.json'
 with open(json_filename, 'w') as json_file:
     json.dump(filtered_videos, json_file, indent=2)
 
-### Select a date
-puzzle_date = None #"2024-01-13"
+# Select a date
+puzzle_date = None  # "2024-01-13"
 
 if puzzle_date in filtered_videos:
     # Download video, process frames to get puzzle number and grid
@@ -23,5 +27,10 @@ if puzzle_date in filtered_videos:
     print(puzzle_number)
     clues = get_puzzle_clues(puzzle_number)
     clue_file = os.path.join(PUZZLES_DIR, f"{puzzle_number}_clues.txt")
-    save_clues_to_file(puzzle_number, clues, clue_file, filtered_videos[puzzle_date], puzzle_date)
-
+    save_clues_to_file(
+        puzzle_number,
+        clues,
+        clue_file,
+        filtered_videos[puzzle_date],
+        puzzle_date
+    )

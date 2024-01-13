@@ -14,10 +14,13 @@ PUZZLES_DIR = os.path.join(HERE, "puzzles")
 INTERVAL = 0.5
 RANGE = (130, 230)
 MAX_FRAMES = 10
-pytesseract.pytesseract.tesseract_cmd = r"E:\Program Files\Tesseract-OCR\tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = (
+    r"E:\Program Files\Tesseract-OCR\tesseract.exe"
+)
 # Create a directory to store frames
 FRAMES_DIR = os.path.join(HERE, "frames")
 os.makedirs(FRAMES_DIR, exist_ok=True)
+
 
 # Function to calculate average brightness of an image
 def calculate_average_brightness(image):
@@ -25,11 +28,13 @@ def calculate_average_brightness(image):
     r, g, b = stat.mean
     return (r + g + b) / 3
 
+
 # Function to check if the average brightness is within a specified range
 def is_brightness_within_range(image, target_range):
     brightness = calculate_average_brightness(image)
     print(brightness)
     return target_range[0] <= brightness <= target_range[1]
+
 
 def find_leftmost_pixel(frame_image, height):
     width, _ = frame_image.size
@@ -47,7 +52,7 @@ def find_leftmost_pixel(frame_image, height):
         black_block_passed = True
 
         # Ignore the block of white pixels
-        if pixel_brightness >250 :
+        if pixel_brightness > 250:
             continue
 
         # Return the x-coordinate of the first non-white pixel
@@ -55,6 +60,7 @@ def find_leftmost_pixel(frame_image, height):
 
     # Return -1 if no suitable pixel is found
     return -1
+
 
 # Function to extract frames from the video at a specific interval
 def extract_frames(video_path, max_frames=MAX_FRAMES, interval=INTERVAL):
@@ -79,14 +85,19 @@ def extract_frames(video_path, max_frames=MAX_FRAMES, interval=INTERVAL):
     cap.release()
     return frames
 
+
 # Function to download the video
 def download_video(video_url):
     youtube = YouTube(video_url)
     video_stream = youtube.streams.filter(file_extension="mp4").first()
     print("commencing download")
-    video_path = video_stream.download(output_path=OUTPUT, filename='temp_video.mp4')
+    video_path = video_stream.download(
+        output_path=OUTPUT,
+        filename='temp_video.mp4'
+        )
     print("download complete")
     return video_path
+
 
 # Function to save frames to a directory
 def save_frames(frames, directory):
@@ -94,10 +105,11 @@ def save_frames(frames, directory):
         frame_path = os.path.join(directory, f"frame_{i}.png")
         cv2.imwrite(frame_path, frame)
 
+
 # Function to perform OCR on an image with cropping
 def perform_ocr(frame_image, leftmost_pixel):
     # Crop the image to the specified coordinates
-    crop_coordinates=(leftmost_pixel, 0, 230, 20)
+    crop_coordinates = (leftmost_pixel, 0, 230, 20)
     cropped_image = frame_image.crop(crop_coordinates)
 
     # Perform OCR on the cropped image
@@ -121,7 +133,7 @@ def process_video(video_path):
     for i, frame in enumerate(video_frames):
         frame_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
-        if is_brightness_within_range(frame_image, RANGE):  # Adjust brightness range as needed
+        if is_brightness_within_range(frame_image, RANGE):
             # Save frames for debugging purposes
             frame_path = os.path.join(FRAMES_DIR, f"frame_{i}.png")
             frame_image.save(frame_path)
@@ -132,8 +144,13 @@ def process_video(video_path):
 
             if puzzle_number:
 
-                puzz_frame = extract_and_scale_puzzle_grid(frame_image, leftmost_pixel)
-                grid_path = os.path.join(PUZZLES_DIR, f"{puzzle_number}_grid.png")
+                puzz_frame = extract_and_scale_puzzle_grid(
+                    frame_image,
+                    leftmost_pixel
+                    )
+                grid_path = os.path.join(
+                    PUZZLES_DIR, f"{puzzle_number}_grid.png"
+                    )
                 os.makedirs(PUZZLES_DIR, exist_ok=True)
                 puzz_frame.save(grid_path)
                 print(f"Puzzle number for video: {puzzle_number}")
@@ -146,19 +163,26 @@ def process_video(video_path):
 # Function to extract puzzle grid from a frame
 def extract_and_scale_puzzle_grid(frame, leftmost_pixel, scale_factor=4):
     # Crop the frame to the specified grid coordinates
-    grid_coordinates=(leftmost_pixel, 19, 336, 237)
+    grid_coordinates = (leftmost_pixel, 19, 336, 237)
     left, upper, right, lower = grid_coordinates
     grid_image = frame.crop((left, upper, right, lower))
 
     # Resize the grid image
-    scaled_grid_image = grid_image.resize((grid_image.width * scale_factor, grid_image.height * scale_factor), Image.NEAREST)
+    scaled_grid_image = grid_image.resize(
+        (
+            grid_image.width * scale_factor, grid_image.height * scale_factor
+        ),
+        Image.NEAREST
+    )
 
     return scaled_grid_image
+
 
 # Main script
 if __name__ == "__main__":
 
-    # Step 5-8: Process a specific puzzle (replace 'desired_puzzle_date' with the actual puzzle number)
+    # Step 5-8: Process a specific puzzle (replace 'desired_puzzle_date'
+    # with the actual puzzle number)
     puzzle_date = '2023-10-28'  # Replace with the actual puzzle number
     # Load data from the JSON file
     json_filename = DICT_FILE

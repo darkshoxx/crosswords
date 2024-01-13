@@ -43,3 +43,4 @@ All data generated from this repo is publically freely available, it is automati
 - lint
 - pre-commit
 - tox
+- fix additional table at end of text file
