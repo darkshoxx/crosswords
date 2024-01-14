@@ -9,9 +9,11 @@ Clone the repo, install python 3.8+, install the requirements, get a youtube API
 Create a file "secrety_secrets.py" and fill it with   
 ```python
 API_KEY = "<your API key here>"
-CHANNEL_ID = "<Youtube Channel ID here>"
+CHANNEL_ID = "<desired Youtube Channel ID here>"
+TESSERACT_PATH = "<your tesseract.exe path \ file here>"
 ```
 where you replace the desired values in the tags.
+
 
 ## Execution
 
@@ -43,4 +45,4 @@ All data generated from this repo is publically freely available, it is automati
 - lint
 - pre-commit
 - tox
-- fix additional table at end of text file
+- formatting or redrawing grid image file

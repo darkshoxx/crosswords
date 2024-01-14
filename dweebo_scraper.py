@@ -4,17 +4,16 @@ import json
 
 from secrety_secrets import API_KEY, CHANNEL_ID
 
-# Set up YouTube API key
-# Make sure to replace 'YOUR_API_KEY' with your actual YouTube API key
+# Be sure to put your API key in secrety_secrets.py, see README.MD
 api_key = API_KEY
-youtube = build('youtube', 'v3', developerKey=api_key)
 
 
-# Step 1: Get a list of all videos on the channel
+# Get a list of all videos on the channel
 def get_channel_videos(channel_id):
     videos = []
     next_page_token = None
 
+    youtube = build('youtube', 'v3', developerKey=api_key)
     while True:
         request = youtube.channels().list(
             part='contentDetails',
@@ -72,7 +71,7 @@ if __name__ == "__main__":
     videos = get_channel_videos(channel_id)
     filtered_videos = filter_videos(videos)
 
-    # Step 4: Save the dictionary with puzzle numbers and video URLs as JSON
+    # Save the dictionary with puzzle numbers and video URLs as JSON
     json_filename = 'puzzle_videos_dict.json'
     with open(json_filename, 'w') as json_file:
         json.dump(filtered_videos, json_file, indent=2)

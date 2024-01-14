@@ -5,21 +5,23 @@ import pytesseract
 import json
 import re
 import cv2
+from secrety_secrets import TESSERACT_PATH
 
+# Directories
 HERE = os.path.abspath(os.path.dirname(__file__))
 OUTPUT = os.path.join(HERE, "videos")
 DICT_FILE = os.path.join(HERE, "puzzle_videos_dict.json")
 VIDEO_FILE = os.path.join(OUTPUT, "temp_video.mp4")
 PUZZLES_DIR = os.path.join(HERE, "puzzles")
-INTERVAL = 0.5
-RANGE = (130, 230)
-MAX_FRAMES = 10
-pytesseract.pytesseract.tesseract_cmd = (
-    r"E:\Program Files\Tesseract-OCR\tesseract.exe"
-)
 # Create a directory to store frames
 FRAMES_DIR = os.path.join(HERE, "frames")
 os.makedirs(FRAMES_DIR, exist_ok=True)
+# Constants
+INTERVAL = 0.5
+RANGE = (130, 230)
+MAX_FRAMES = 10
+# Further Setup for Pytesseract
+pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
 
 # Function to calculate average brightness of an image
@@ -32,7 +34,6 @@ def calculate_average_brightness(image):
 # Function to check if the average brightness is within a specified range
 def is_brightness_within_range(image, target_range):
     brightness = calculate_average_brightness(image)
-    print(brightness)
     return target_range[0] <= brightness <= target_range[1]
 
 
@@ -155,9 +156,10 @@ def process_video(video_path):
                 puzz_frame.save(grid_path)
                 print(f"Puzzle number for video: {puzzle_number}")
                 return puzzle_number
+            else:
+                raise Exception(f"Puzzle Number not found in {puzzle_number}")
 
-    print("No suitable frames found to extract puzzle number.")
-    return None
+    raise Exception("No suitable frames found to extract puzzle number.")
 
 
 # Function to extract puzzle grid from a frame
