@@ -1,10 +1,12 @@
+# External imports
 import requests
 import os
 from bs4 import BeautifulSoup
 
-
+# Directories
 HERE = os.path.abspath(os.path.dirname(__file__))
 TEST_FILE = os.path.join(HERE, "testfile.txt")
+
 
 def final_tables_parser(clues: list[dict]):
     new_clues = []
@@ -15,25 +17,28 @@ def final_tables_parser(clues: list[dict]):
         if len(long_text_string) < 200:
             print(f"table {table} contains less than 200 characters, dropping")
         elif len(set(long_text_string)) < 15:
-            print(f"table {table} contains less than 15 unique symbols, dropping")
+            print(
+                f"table {table} contains less than 15 unique symbols, dropping"
+                )
         else:
             new_clues.append(table)
     return new_clues
 
 
 def parse_html_for_tables(response):
-        # Parse HTML content
-        soup = BeautifulSoup(response.text, 'html.parser')
+    # Parse HTML content
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Find all tables on the page
-        tables = soup.find_all('table')
+    # Find all tables on the page
+    tables = soup.find_all('table')
 
-        if tables:
-            clues = [extract_clues_from_table(table) for table in tables]
+    if tables:
+        clues = [extract_clues_from_table(table) for table in tables]
 
-            return clues
-        else:
-            raise Exception("Tables not found on page")
+        return clues
+    else:
+        raise Exception("Tables not found on page")
+
 
 def get_puzzle_clues(puzzle_id):
     # Construct the URL for the given puzzle ID
@@ -78,17 +83,18 @@ def save_clues_to_file(puzz_id, clues, path=TEST_FILE, link="", date=""):
             for idx, clue_set in enumerate(clues, start=1):
                 file.write(f"Clues for Table {idx}:\n")
                 if idx == 1:
-                    file.write(f"(Probably) Across\n")
+                    file.write("(Probably) Across\n")
                 elif idx == 2:
-                    file.write(f"(Probably) Down\n")
+                    file.write("(Probably) Down\n")
                 else:
-                    file.write(f"more than two tables?\n")
+                    file.write("more than two tables?\n")
                 for number, clue in clue_set.items():
                     file.write(f"{number}. {clue}\n")
                 file.write("\n")
         print(f"Clues saved to {output_file_path}")
     else:
         raise Exception(f"Clues {clues} not returned in valid format.")
+
 
 # Main script
 if __name__ == "__main__":

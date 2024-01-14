@@ -1,7 +1,8 @@
+# External imports
 from datetime import datetime
 from googleapiclient.discovery import build
 import json
-
+# Local Imorts
 from secrety_secrets import API_KEY, CHANNEL_ID
 
 # Be sure to put your API key in secrety_secrets.py, see README.MD

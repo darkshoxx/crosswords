@@ -1,11 +1,13 @@
+# External imports
+import os
+import json
+# Local imports
 from dweebo_scraper import get_channel_videos, CHANNEL_ID, filter_videos
 from puzzle_getter import (
     download_video, process_video, VIDEO_FILE, PUZZLES_DIR
 )
 from cwparse import get_puzzle_clues, save_clues_to_file
 
-import os
-import json
 
 # Get Videos from Channel and store them in file:
 channel_id = CHANNEL_ID  # Replace with the actual channel ID

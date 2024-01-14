@@ -1,3 +1,4 @@
+# External imports
 import os
 from pytube import YouTube
 from PIL import Image, ImageStat
@@ -5,6 +6,7 @@ import pytesseract
 import json
 import re
 import cv2
+# Local Imorts
 from secrety_secrets import TESSERACT_PATH
 
 # Directories
